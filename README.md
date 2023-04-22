@@ -1,5 +1,7 @@
 # Picons
 
+Picons-Abgleich zwischen http://picons.vuplus-support.org/ und einer VU+ oder wahrscheinlich irgendeiner anderen Enigma2-based set-top Box (STB), auf der https://github.com/E2OpenPlugins/e2openplugin-OpenWebif läuft.
+
 ## run
 
 ```
