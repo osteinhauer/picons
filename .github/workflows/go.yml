@@ -26,7 +26,7 @@ jobs:
         go get .
 
     - name: Build
-      run: env CGO_ENABLED=0 go build -v ./...
+      run: ./build.sh
 
 #    - name: Test
 #      run: go test -v ./...
