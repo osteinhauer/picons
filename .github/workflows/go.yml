@@ -35,3 +35,13 @@ jobs:
       with:
         name: picons-update
         path: dist/
+
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/release/')
+      with:
+        files: |
+          dist/picons-update-amd64-linux
+          dist/picons-update-amd64-darwin
+          dist/picons-update-arm
+          dist/picons-update.exe
