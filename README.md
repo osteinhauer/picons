@@ -10,7 +10,6 @@ picons-update --help
 Usage:
   picons-update [OPTIONS]
 
-Application Options:
   -f, --picons-folder=                  picons Verzeichnis auf vu (default: /usr/share/enigma2/picon/)
   -c, --copy                            ob die picons kopiert werden müssen
   -t, --temp-dir=                       temp Verzeichnis vor dem kopieren zu remote
@@ -26,6 +25,7 @@ Application Options:
   -s, --save-as=[name|ref|all]          ob die picons auf der vu by name, by ref oder beides gespeichert werden sollen (default: all)
   -L, --lastrun                         prüft anhand einer .picons-update.lastrun im picons folder, ob update ausgeführt wird
   -I, --info                            info vom remote server
+  -v, --version                         programm version
 
 Help Options:
   -h, --help                            Show this help message
