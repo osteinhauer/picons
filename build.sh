@@ -1,7 +1,7 @@
 #! /bin/sh
 version="$(git symbolic-ref -q --short HEAD || git describe --tags --exact-match)"
 gitsha1="$(git rev-parse HEAD)"
-version="${version/main/develop-$gitsha1}"
+version="${version/main/develop-${gitsha1}}"
 version="${version/release\//}"
 
 echo "build $version"
