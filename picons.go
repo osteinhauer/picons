@@ -36,6 +36,8 @@ var client = resty.New()
 
 var opts Options
 
+var version = ""
+
 type Options struct {
 	PiconsFolder       string `short:"f" long:"picons-folder" default:"/usr/share/enigma2/picon/" description:"picons Verzeichnis auf vu"`
 	Copy               bool   `short:"c" long:"copy" description:"ob die picons kopiert werden müssen"`
@@ -51,6 +53,7 @@ type Options struct {
 	SaveAs             string `short:"s" long:"save-as" description:"ob die picons auf der vu by name, by ref oder beides gespeichert werden sollen" default:"all" choice:"name" choice:"ref" choice:"all"`
 	Lastrun            bool   `short:"L" long:"lastrun" description:"prüft anhand einer .picons-update.lastrun im picons folder, ob update ausgeführt wird"`
 	Info               bool   `short:"I" long:"info" description:"info vom remote server"`
+	Version            bool   `short:"v" long:"version" description:"programm version"`
 }
 
 type LoadResult struct {
@@ -444,6 +447,11 @@ func init() {
 }
 
 func main() {
+	if opts.Version {
+		fmt.Println("picons-update version: " + version)
+		os.Exit(0)
+	}
+
 	if piconsFolderIsRemote {
 		defer os.RemoveAll(opts.Tempdir)
 	}
