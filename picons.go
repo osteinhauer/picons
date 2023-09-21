@@ -120,12 +120,17 @@ func (ref Ref) isDotOnlyName() bool {
 }
 
 func (ref Ref) isSkipableName() bool {
-	sidMatch, err := regexp.MatchString("^[0-9]+\\ SID\\ 0x([0-9]|[a-z])+$", ref.Servicename)
+	sidMatch, err := regexp.MatchString("^[0-9]+[aa-zA-Z]\\ SID\\ 0x([0-9]|[a-zA-Z])+$", ref.Servicename)
 	if err != nil {
 		log.Error("Falscher RegExp ", err)
 		os.Exit(1)
 	}
-	return ref.isDotOnlyName() || strings.Contains(ref.Servicename, "/") || sidMatch
+	dotMatch, err := regexp.MatchString("^\\(\\.+\\)$", ref.Servicename)
+	if err != nil {
+		log.Error("Falscher RegExp ", err)
+		os.Exit(1)
+	}
+	return ref.isDotOnlyName() || strings.Contains(ref.Servicename, "/") || sidMatch || dotMatch
 }
 
 func (ref Ref) filenameByNameNormalized() string {
