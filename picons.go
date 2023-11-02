@@ -50,7 +50,7 @@ type Options struct {
 	DryRun                     bool   `long:"dry-run" description:"nur prüfen"`
 	PiconsRemoteFolder         string `short:"u" long:"picons-remote-folder" description:"Pfad der picons auf dem Server" default:"picons/uploader/NaseDC/by Name_13.0&19.2E_DVB-C_T2_NaseDC_XPicons_transparent_220x132_32 Bit_NaseDC"`
 	LoadBy                     string `short:"l" long:"load-by" description:"ob die picons auf dem Server by name oder by ref sind" default:"name" choice:"name" choice:"ref"`
-	UseFallback                bool   `short:"b" long:"use-fallback" decription:"fallback benutzen wenn picon nicht gefunden wurde" default:"true"`
+	UseFallback                bool   `short:"b" long:"use-fallback" description:"fallback benutzen wenn picon nicht gefunden wurde"`
 	PiconsRemoteFolderFallback string `short:"U" long:"picons-remote-folder-fallback" description:"Pfad der picons auf dem Server für fallback" default:"picons/uploader/LinuxLover2012/ASTRA19_LINUXLOVER2012_HD_PICONS_FLUID_300x130_32BIT__DACH_FREETV_SKY"`
 	LoadByFallback             string `short:"F" long:"load-by-fallback" description:"ob die picons auf dem Server by name oder by ref sind" default:"ref" choice:"name" choice:"ref"`
 	SaveAs                     string `short:"s" long:"save-as" description:"ob die picons auf der vu by name, by ref oder beides gespeichert werden sollen" default:"all" choice:"name" choice:"ref" choice:"all"`
