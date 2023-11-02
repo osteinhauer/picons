@@ -107,6 +107,15 @@ func (ref Ref) filenamesByOptions() []string {
 	}
 }
 
+func (ref Ref) filename(typ string) string {
+	switch {
+	case typ == "name":
+		return ref.filenameByName()
+	default:
+		return ref.filenameByRef()
+	}
+}
+
 func (ref Ref) filenameByName() string {
 	return ref.Servicename + ".png"
 }
@@ -252,27 +261,27 @@ func toCSV(service Ref, kind string) string {
 		quote(service.filenameByRef())
 }
 
-func forceGetPicon(service Ref, name string) ([]byte, bool) {
+func forceGetPicon(service Ref, typ string) ([]byte, bool) {
+	name := service.filename(typ)
 	picon := getPicon(name)
 	if picon != nil {
 		log.Debug("gefunden: ", name)
 		return picon, true
-	} else {
+	} else if typ == "name" {
 		forceName := cleanWhitespaces(name)
 		log.Debug("versuche: ", forceName)
-		picon := getPicon(forceName)
+		picon = getPicon(forceName)
+
 		if picon != nil {
 			log.Debug("gefunden: ", forceName)
 			return picon, false
-		} else {
-			log.Debug("nicht gefunden: ", forceName)
-			return nil, false
 		}
 	}
+	return nil, false
 }
 
 func saveFile(picon []byte, file string) {
-	err := ioutil.WriteFile(opts.Tempdir+"/"+file, picon, 0644)
+	err := os.WriteFile(opts.Tempdir+"/"+file, picon, 0644)
 	if err != nil {
 		log.Error("Error: ", err)
 	}
@@ -301,10 +310,8 @@ func load(refs []Ref, onNext func(ref Ref)) LoadResult {
 		}
 		log.Info("Suche für ", service.Servicename)
 
-		filename := service.filenameByName()
-		picon, found := forceGetPicon(service, filename)
+		picon, found := forceGetPicon(service, opts.LoadBy)
 		if picon != nil {
-			log.Debug("gefunden: ", filename)
 			savePicon(picon, service)
 		}
 		if found {

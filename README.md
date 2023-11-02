@@ -37,8 +37,8 @@ Help Options:
 ./build.sh
 ```
 
-```
-LOG_LEVEL=debug go run main.go
+```[shell]
+LOG_LEVEL=debug go run picons.go
 ```
 
 ```

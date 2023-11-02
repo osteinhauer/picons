@@ -1,1 +1,14 @@
+### picons info
 GET http://picons.vuplus-support.org/picons/picon_info.txt
+
+### channels
+GET http://vuuno4kse/api/getservices?sRef=1:7:1:0:0:0:0:0:0:0:(type+==+1)+||+(type+==+17)+||+(type+==+22)+||+(type+==+24)+||+(type+==+25)+||+(type+==+27)+||+(type+==+31)+ORDER+BY+name
+
+### bouqutes
+GET http://vuuno4kse/api/bouquets
+
+### channels from bouquet
+GET http://vuuno4kse/api/getallservices?type=radio
+
+### picon
+GET http://picons.vuplus-support.org/picons/uploader/LinuxLover2012/ASTRA19_LINUXLOVER2012_HD_PICONS_FLUID_300x130_32BIT__DACH_FREETV_SKY/1_0_1_4E2A_43A_1_C00000_0_0_0.png
