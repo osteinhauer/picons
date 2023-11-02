@@ -120,7 +120,7 @@ func (ref Ref) filename(typ string) string {
 }
 
 func (ref Ref) filenameByName() string {
-	return ref.Servicename + ".png"
+	return strings.ReplaceAll(ref.Servicename, "/", "") + ".png"
 }
 
 func (ref Ref) filenameByRef() string {
