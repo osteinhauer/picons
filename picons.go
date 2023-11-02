@@ -39,21 +39,24 @@ var opts Options
 var version = ""
 
 type Options struct {
-	PiconsFolder       string `short:"f" long:"picons-folder" default:"/usr/share/enigma2/picon/" description:"picons Verzeichnis auf vu"`
-	Copy               bool   `short:"c" long:"copy" description:"ob die picons kopiert werden müssen"`
-	Tempdir            string `short:"t" long:"temp-dir" description:"temp Verzeichnis vor dem kopieren zu remote"`
-	Pemfile            string `short:"k" long:"pem-file" description:"pemfile für ssh"`
-	Host               string `short:"h" long:"host" default:"vuuno4kse" description:"host zum kopieren"`
-	PushoverToken      string `short:"p" long:"pushover-token" description:"pushover token"`
-	PushoverRecipient  string `short:"r" long:"pushover-recipient" description:"pushover recipient"`
-	PushoverPriority   int    `short:"P" long:"pushover-priority" description:"pushover prio" default:"0" choice:"-2" choice:"-1" choice:"0" choice:"1" choice:"2"`
-	DryRun             bool   `long:"dry-run" description:"nur prüfen"`
-	PiconsRemoteFolder string `short:"u" long:"picons-remote-folder" description:"Pfad der picons auf dem Server" default:"picons/uploader/NaseDC/by Name_13.0&19.2E_DVB-C_T2_NaseDC_XPicons_transparent_220x132_32 Bit_NaseDC"`
-	LoadBy             string `short:"l" long:"load-by" description:"ob die picons auf dem Server by name oder by ref sind" default:"name" choice:"name" choice:"ref"`
-	SaveAs             string `short:"s" long:"save-as" description:"ob die picons auf der vu by name, by ref oder beides gespeichert werden sollen" default:"all" choice:"name" choice:"ref" choice:"all"`
-	Lastrun            bool   `short:"L" long:"lastrun" description:"prüft anhand einer .picons-update.lastrun im picons folder, ob update ausgeführt wird"`
-	Info               bool   `short:"I" long:"info" description:"info vom remote server"`
-	Version            bool   `short:"v" long:"version" description:"programm version"`
+	PiconsFolder               string `short:"f" long:"picons-folder" default:"/usr/share/enigma2/picon/" description:"picons Verzeichnis auf vu"`
+	Copy                       bool   `short:"c" long:"copy" description:"ob die picons kopiert werden müssen"`
+	Tempdir                    string `short:"t" long:"temp-dir" description:"temp Verzeichnis vor dem kopieren zu remote"`
+	Pemfile                    string `short:"k" long:"pem-file" description:"pemfile für ssh"`
+	Host                       string `short:"h" long:"host" default:"vuuno4kse" description:"host zum kopieren"`
+	PushoverToken              string `short:"p" long:"pushover-token" description:"pushover token"`
+	PushoverRecipient          string `short:"r" long:"pushover-recipient" description:"pushover recipient"`
+	PushoverPriority           int    `short:"P" long:"pushover-priority" description:"pushover prio" default:"0" choice:"-2" choice:"-1" choice:"0" choice:"1" choice:"2"`
+	DryRun                     bool   `long:"dry-run" description:"nur prüfen"`
+	PiconsRemoteFolder         string `short:"u" long:"picons-remote-folder" description:"Pfad der picons auf dem Server" default:"picons/uploader/NaseDC/by Name_13.0&19.2E_DVB-C_T2_NaseDC_XPicons_transparent_220x132_32 Bit_NaseDC"`
+	LoadBy                     string `short:"l" long:"load-by" description:"ob die picons auf dem Server by name oder by ref sind" default:"name" choice:"name" choice:"ref"`
+	UseFallback                bool   `short:"b" long:"use-fallback" decription:"fallback benutzen wenn picon nicht gefunden wurde" default:"true"`
+	PiconsRemoteFolderFallback string `short:"U" long:"picons-remote-folder-fallback" description:"Pfad der picons auf dem Server für fallback" default:"picons/uploader/LinuxLover2012/ASTRA19_LINUXLOVER2012_HD_PICONS_FLUID_300x130_32BIT__DACH_FREETV_SKY"`
+	LoadByFallback             string `short:"F" long:"load-by-fallback" description:"ob die picons auf dem Server by name oder by ref sind" default:"ref" choice:"name" choice:"ref"`
+	SaveAs                     string `short:"s" long:"save-as" description:"ob die picons auf der vu by name, by ref oder beides gespeichert werden sollen" default:"all" choice:"name" choice:"ref" choice:"all"`
+	Lastrun                    bool   `short:"L" long:"lastrun" description:"prüft anhand einer .picons-update.lastrun im picons folder, ob update ausgeführt wird"`
+	Info                       bool   `short:"I" long:"info" description:"info vom remote server"`
+	Version                    bool   `short:"v" long:"version" description:"programm version"`
 }
 
 type LoadResult struct {
@@ -139,7 +142,7 @@ func (ref Ref) isSkipableName() bool {
 		log.Error("Falscher RegExp ", err)
 		os.Exit(1)
 	}
-	return ref.isDotOnlyName() || strings.Contains(ref.Servicename, "/") || sidMatch || dotMatch
+	return ref.isDotOnlyName() || sidMatch || dotMatch
 }
 
 func (ref Ref) filenameByNameNormalized() string {
@@ -228,9 +231,15 @@ func getServices(sRef string) Response {
 	return response
 }
 
-func getPicon(name string) []byte {
+func getPicon(name string, fallback bool) []byte {
 
-	var piconsUrl = piconsBaseUrl + "/" + name
+	var piconsUrl = piconsBaseUrl
+	if fallback {
+		piconsUrl = piconsUrl + opts.PiconsRemoteFolderFallback
+	} else {
+		piconsUrl = piconsUrl + opts.PiconsRemoteFolder
+	}
+	piconsUrl = piconsUrl + "/" + name
 
 	log.Debug("picon URL: ", piconsBaseUrl)
 
@@ -261,21 +270,24 @@ func toCSV(service Ref, kind string) string {
 		quote(service.filenameByRef())
 }
 
-func forceGetPicon(service Ref, typ string) ([]byte, bool) {
+func forceGetPicon(service Ref, typ string, fallback bool) ([]byte, bool) {
 	name := service.filename(typ)
-	picon := getPicon(name)
+	picon := getPicon(name, !fallback)
 	if picon != nil {
 		log.Debug("gefunden: ", name)
 		return picon, true
 	} else if typ == "name" {
 		forceName := cleanWhitespaces(name)
 		log.Debug("versuche: ", forceName)
-		picon = getPicon(forceName)
+		picon = getPicon(forceName, !fallback)
 
 		if picon != nil {
 			log.Debug("gefunden: ", forceName)
 			return picon, false
 		}
+	}
+	if fallback {
+		return forceGetPicon(service, opts.LoadByFallback, false)
 	}
 	return nil, false
 }
@@ -310,7 +322,7 @@ func load(refs []Ref, onNext func(ref Ref)) LoadResult {
 		}
 		log.Info("Suche für ", service.Servicename)
 
-		picon, found := forceGetPicon(service, opts.LoadBy)
+		picon, found := forceGetPicon(service, opts.LoadBy, opts.UseFallback)
 		if picon != nil {
 			savePicon(picon, service)
 		}
@@ -413,8 +425,6 @@ func initOptions() {
 	if err != nil {
 		os.Exit(0)
 	}
-
-	piconsBaseUrl = piconsBaseUrl + opts.PiconsRemoteFolder
 
 	if opts.Copy {
 		piconsFolderIsRemote = true
