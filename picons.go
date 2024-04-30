@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"net/url"
 	"os"
 	"regexp"
 	"strconv"
@@ -234,12 +235,12 @@ func getServices(sRef string) Response {
 func getPicon(name string, fallback bool) []byte {
 
 	var piconsUrl = piconsBaseUrl
-	if fallback {
+	if !fallback {
 		piconsUrl = piconsUrl + opts.PiconsRemoteFolderFallback
 	} else {
 		piconsUrl = piconsUrl + opts.PiconsRemoteFolder
 	}
-	piconsUrl = piconsUrl + "/" + name
+	piconsUrl = piconsUrl + "/" + url.PathEscape(name)
 
 	log.Debug("picon URL: ", piconsBaseUrl)
 
@@ -248,6 +249,7 @@ func getPicon(name string, fallback bool) []byte {
 		Get(piconsUrl)
 
 	if err != nil || resp.IsError() {
+		log.Debug("Fehler beim Laden: ", piconsUrl, resp, err)
 		return nil
 	}
 
