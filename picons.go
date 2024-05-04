@@ -58,6 +58,7 @@ type Options struct {
 	Lastrun                    bool   `short:"L" long:"lastrun" description:"prüft anhand einer .picons-update.lastrun im picons folder, ob update ausgeführt wird"`
 	Info                       bool   `short:"I" long:"info" description:"info vom remote server"`
 	Version                    bool   `short:"v" long:"version" description:"programm version"`
+	Debug                      bool   `short:"d" long:"debug" description:"debug infos"`
 }
 
 type LoadResult struct {
@@ -530,7 +531,9 @@ func main() {
 	}
 
 	print(loadResultTV.missingRefs, loadResultRadio.missingRefs, "\nFehlende picons:\n\n")
-	print(loadResultTV.skipedRefs, loadResultRadio.skipedRefs, "\nÜbersprungene picons:\n\n")
+	if opts.Debug {
+		print(loadResultTV.skipedRefs, loadResultRadio.skipedRefs, "\nÜbersprungene picons:\n\n")
+	}
 
 	if !opts.DryRun {
 
