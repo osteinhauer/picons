@@ -275,14 +275,14 @@ func toCSV(service Ref, kind string) string {
 
 func forceGetPicon(service Ref, typ string, fallback bool) ([]byte, bool) {
 	name := service.filename(typ)
-	picon := getPicon(name, !fallback)
+	picon := getPicon(name, fallback)
 	if picon != nil {
 		log.Debug("gefunden: ", name)
 		return picon, true
 	} else if typ == "name" {
 		forceName := cleanWhitespaces(name)
 		log.Debug("versuche: ", forceName)
-		picon = getPicon(forceName, !fallback)
+		picon = getPicon(forceName, fallback)
 
 		if picon != nil {
 			log.Debug("gefunden: ", forceName)
