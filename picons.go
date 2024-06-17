@@ -48,6 +48,7 @@ type Options struct {
 	PushoverToken              string `short:"p" long:"pushover-token" description:"pushover token"`
 	PushoverRecipient          string `short:"r" long:"pushover-recipient" description:"pushover recipient"`
 	PushoverPriority           int    `short:"P" long:"pushover-priority" description:"pushover prio" default:"0" choice:"-2" choice:"-1" choice:"0" choice:"1" choice:"2"`
+	PushoverThreshold          int    `short:"T" long:"pushover-threshold" description:"ab wie vielen nicht gefundenen benachrichtigt wird" default:"0"`
 	DryRun                     bool   `long:"dry-run" description:"nur prüfen"`
 	PiconsRemoteFolder         string `short:"u" long:"picons-remote-folder" description:"Pfad der picons auf dem Server" default:"picons/uploader/NaseDC/by Name_13.0&19.2E_DVB-C_T2_NaseDC_XPicons_transparent_220x132_32 Bit_NaseDC"`
 	LoadBy                     string `short:"l" long:"load-by" description:"ob die picons auf dem Server by name oder by ref sind" default:"name" choice:"name" choice:"ref"`
@@ -554,7 +555,7 @@ func main() {
 			}
 		}
 
-		if missingCount > 0 {
+		if missingCount >= opts.PushoverThreshold {
 			if opts.PushoverToken != "" && opts.PushoverRecipient != "" {
 				pushToPushover(strconv.Itoa(missingCount)+" picons fehlen", "picons")
 			}
