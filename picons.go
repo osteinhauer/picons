@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"crypto/md5"
 	"encoding/csv"
 	"encoding/hex"
@@ -45,6 +46,8 @@ type Options struct {
 	Tempdir                    string `short:"t" long:"temp-dir" description:"temp Verzeichnis vor dem kopieren zu remote"`
 	Pemfile                    string `short:"k" long:"pem-file" description:"pemfile für ssh"`
 	Host                       string `short:"h" long:"host" default:"vuuno4kse" description:"host zum kopieren"`
+	Username                   string `long:"username" default:"" description:"username webif"`
+	Password                   string `long:"password" default:"" description:"password webif"`
 	PushoverToken              string `short:"p" long:"pushover-token" description:"pushover token"`
 	PushoverRecipient          string `short:"r" long:"pushover-recipient" description:"pushover recipient"`
 	PushoverPriority           int    `short:"P" long:"pushover-priority" description:"pushover prio" default:"0" choice:"-2" choice:"-1" choice:"0" choice:"1" choice:"2"`
@@ -422,6 +425,39 @@ func writeLastrun(piconInfo PiconInfo, refs []Ref) {
 	ioutil.WriteFile(folder+"/.picons-update.lastrun", []byte(content), 0644)
 }
 
+func readConfigFile() {
+	file, err := os.Open("/etc/picons-update/conf")
+	if err != nil {
+		return
+	}
+	defer file.Close()
+
+	properties := make(map[string]string)
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		parts := strings.SplitN(line, "=", 2)
+		if len(parts) == 2 {
+			key := strings.TrimSpace(parts[0])
+			value := strings.TrimSpace(parts[1])
+			properties[key] = value
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return
+	}
+	username, exists := properties["username"]
+	if exists && opts.Username == "" {
+		opts.Username = username
+	}
+	password, exists := properties["password"]
+	if exists && opts.Password == "" {
+		opts.Password = password
+	}
+}
+
 func initOptions() {
 
 	_, err := flags.Parse(&opts)
@@ -429,6 +465,8 @@ func initOptions() {
 	if err != nil {
 		os.Exit(0)
 	}
+
+	readConfigFile()
 
 	if opts.Copy {
 		piconsFolderIsRemote = true
@@ -475,6 +513,11 @@ func init() {
 	log.SetLevel(logLevel)
 
 	initOptions()
+
+	if opts.Username != "" && opts.Password != "" {
+		client.SetBasicAuth(opts.Username, opts.Password)
+		client.SetDisableWarn(true)
+	}
 }
 
 func main() {
