@@ -32,7 +32,7 @@ jobs:
 #    - name: Test
 #      run: go test -v ./...
 
-    - uses: actions/upload-artifact@v6.0.0
+    - uses: actions/upload-artifact@v7.0.1
       with:
         name: picons-update
         path: dist/
