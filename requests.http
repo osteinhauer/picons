@@ -3,12 +3,15 @@ GET http://picons.vuplus-support.org/picons/picon_info.txt
 
 ### channels
 GET http://vuuno4kse/api/getservices?sRef=1:7:1:0:0:0:0:0:0:0:(type+==+1)+||+(type+==+17)+||+(type+==+22)+||+(type+==+24)+||+(type+==+25)+||+(type+==+27)+||+(type+==+31)+ORDER+BY+name
+Authorization: Basic {{username}} {{password}}
 
 ### bouqutes
 GET http://vuuno4kse/api/bouquets
+Authorization: Basic {{username}} {{password}}
 
 ### channels from bouquet
 GET http://vuuno4kse/api/getallservices?type=radio
+Authorization: Basic {{username}} {{password}}
 
 ### picon NaseDC (by name)
 GET http://picons.vuplus-support.org/picons/NaseDC/by%20Name_13.0&19.2E_DVB-C_T2_NaseDC_XPicons_transparent_220x132_32%20Bit_NaseDC/Das%20Erste%20HD.png

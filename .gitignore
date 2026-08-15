@@ -2,3 +2,4 @@ dist
 .tmp
 .idea
 *.iml
+/http-client.private.env.json
