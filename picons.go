@@ -53,10 +53,10 @@ type Options struct {
 	PushoverPriority           int    `short:"P" long:"pushover-priority" description:"pushover prio" default:"0" choice:"-2" choice:"-1" choice:"0" choice:"1" choice:"2"`
 	PushoverThreshold          int    `short:"T" long:"pushover-threshold" description:"ab wie vielen nicht gefundenen benachrichtigt wird" default:"0"`
 	DryRun                     bool   `long:"dry-run" description:"nur prüfen"`
-	PiconsRemoteFolder         string `short:"u" long:"picons-remote-folder" description:"Pfad der picons auf dem Server" default:"picons/uploader/NaseDC/by Name_13.0&19.2E_DVB-C_T2_NaseDC_XPicons_transparent_220x132_32 Bit_NaseDC"`
+	PiconsRemoteFolder         string `short:"u" long:"picons-remote-folder" description:"Pfad der picons auf dem Server" default:"picons/NaseDC/by Name_13.0&19.2E_DVB-C_T2_NaseDC_XPicons_transparent_220x132_32 Bit_NaseDC"`
 	LoadBy                     string `short:"l" long:"load-by" description:"ob die picons auf dem Server by name oder by ref sind" default:"name" choice:"name" choice:"ref"`
 	UseFallback                bool   `short:"b" long:"use-fallback" description:"fallback benutzen wenn picon nicht gefunden wurde"`
-	PiconsRemoteFolderFallback string `short:"U" long:"picons-remote-folder-fallback" description:"Pfad der picons auf dem Server für fallback" default:"picons/uploader/LinuxLover2012/ASTRA19_LINUXLOVER2012_HD_PICONS_FLUID_300x130_32BIT_KOMPLETT"`
+	PiconsRemoteFolderFallback string `short:"U" long:"picons-remote-folder-fallback" description:"Pfad der picons auf dem Server für fallback" default:"picons/LinuxLover2012/ASTRA19_LINUXLOVER2012_HD_PICONS_FLUID_300x130_32BIT_KOMPLETT"`
 	LoadByFallback             string `short:"F" long:"load-by-fallback" description:"ob die picons auf dem Server by name oder by ref sind" default:"ref" choice:"name" choice:"ref"`
 	SaveAs                     string `short:"s" long:"save-as" description:"ob die picons auf der vu by name, by ref oder beides gespeichert werden sollen" default:"all" choice:"name" choice:"ref" choice:"all"`
 	Lastrun                    bool   `short:"L" long:"lastrun" description:"prüft anhand einer .picons-update.lastrun im picons folder, ob update ausgeführt wird"`
@@ -199,7 +199,7 @@ func getInfo() PiconInfo {
 			log.Fatal(err)
 		}
 
-		if record[0] == opts.PiconsRemoteFolder {
+		if strings.TrimSuffix(record[0], "/") == strings.TrimSuffix(opts.PiconsRemoteFolder, "/") {
 			return PiconInfo{
 				Path:        record[0],
 				Example:     record[1],

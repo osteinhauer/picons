@@ -10,5 +10,5 @@ GET http://vuuno4kse/api/bouquets
 ### channels from bouquet
 GET http://vuuno4kse/api/getallservices?type=radio
 
-### picon
-GET http://picons.vuplus-support.org/picons/uploader/LinuxLover2012/ASTRA19_LINUXLOVER2012_HD_PICONS_FLUID_300x130_32BIT_KOMPLETT/1_0_1_207B_432_1_C00000_0_0_0.png
+### picon NaseDC (by name)
+GET http://picons.vuplus-support.org/picons/NaseDC/by%20Name_13.0&19.2E_DVB-C_T2_NaseDC_XPicons_transparent_220x132_32%20Bit_NaseDC/Das%20Erste%20HD.png
